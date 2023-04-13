@@ -35,7 +35,3 @@ def open_connection(db_name: str):
         return wrapper
 
     return decorator
-
-
-def get_database(db_name: str):
-    return open_connection(db_name)
