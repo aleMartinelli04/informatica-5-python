@@ -17,11 +17,11 @@ def get_connection(db_name: str, user: str = 'root', password: str = '', host: s
     return connect(**config)
 
 
-def open_connection(db_name: str):
+def open_connection(db_name: str, dictionary: bool = True):
     def decorator(func):
         def wrapper(*args, **kwargs):
             connection = get_connection(db_name)
-            cursor = connection.cursor()
+            cursor = connection.cursor(dictionary=dictionary)
 
             kwargs['cursor'] = cursor
 
