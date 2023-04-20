@@ -1,5 +1,8 @@
 import flask
+from flask import Response
 from mysql.connector import connect, MySQLConnection
+
+from utils.StatusCodeException import StatusCodeException
 
 
 def get_connection(db_name: str, user: str = 'root', password: str = '', host: str = 'localhost',
@@ -25,12 +28,18 @@ def open_connection(db_name: str, dictionary: bool = True):
 
             kwargs['cursor'] = cursor
 
-            result = func(*args, **kwargs)
+            try:
+                result = flask.jsonify(func(*args, **kwargs))
+
+            except StatusCodeException as e:
+                result = Response(e.message, e.code)
 
             cursor.close()
             connection.close()
 
-            return flask.jsonify(result)
+            return result
+
+        wrapper.__name__ = func.__name__
 
         return wrapper
 
